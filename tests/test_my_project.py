@@ -1,4 +1,4 @@
-from lawcite import multiply_two_numbers
+from bookpull import multiply_two_numbers
 
 
 def test_multiply_two_numbers():
