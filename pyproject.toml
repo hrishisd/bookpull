@@ -6,9 +6,12 @@ authors = ["hrishisd <hdharam@berkeley.edu>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.10"
 pytest = "^7.2.2"
 eyecite = "^2.5.1"
+# This is needed to avoid ModuleNotFoundError: No module named 'exceptiongroup'
+# when running poetry run pytest from the github action.
+exceptiongroup = "^1.1.1"
 
 
 [tool.poetry.group.dev.dependencies]
