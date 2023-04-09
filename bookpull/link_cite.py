@@ -2,15 +2,15 @@ import re
 from dataclasses import dataclass
 from typing import Optional
 
-URL_REGEX = r"https?://[^\s/$.?#].[^\s]*"
+_URL_REGEX = r"https?://[^\s/$.?#].[^\s]*"
 LINK_CITATION_PATTERN = re.compile(
-    r"(.+),(.+) (.*)\. (.* )?\(.*\), ("  #
-    + URL_REGEX
-    + r") \[("
-    + URL_REGEX
-    + r")\]?"
+    r"(.+),(.+) (.*) (.* )?\(.*\), ("
+    + _URL_REGEX
+    + r")( \[("
+    + _URL_REGEX
+    + r")\])?"
 )
-"""Matches a link citation. The url is group 5. The permalink is group 6."""
+"""Matches a link citation. The url is group 5. The permalink is group 7."""
 
 
 @dataclass
@@ -19,7 +19,7 @@ class LinkCitation:
 
     Format:
 
-      <Author>, <Title>, <Sposoring Org.> <pincite> (date), URL, [permalink]
+      <Author>, <Title>, <Sposoring Org> <pincite> (date), URL, [permalink]
 
     permalink is optional.
     """
@@ -35,5 +35,5 @@ def parse_link_citations(text: str) -> list[LinkCitation]:
         return []
     source = match.group(0)
     url = match.group(5)
-    permalink = match.group(6)
+    permalink = match.group(7)
     return [LinkCitation(source_text=source, url=url, permalink=permalink)]
