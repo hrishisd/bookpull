@@ -54,11 +54,18 @@ def parse_footnotes(doc_path: Path) -> list[Footnote]:
 
             footnote_strings = []
             for footnote in root.findall("w:footnote", FOOTNOTE_NAMESPACE):
-                # footnote_type = footnote.get(
-                #     f"{{{FOOTNOTE_NAMESPACE['w']}}}type"
-                # )
-                # if footnote_type in ["separator", "continuationSeparator"]:
-                #     continue
+                footnote_type = footnote.get(
+                    f"{{{FOOTNOTE_NAMESPACE['w']}}}type"
+                )
+                # These footnote types are used internally for formatting and
+                # layout purposes. They do not appear in the main document
+                # view.
+                if footnote_type in [
+                    "separator",
+                    "continuationSeparator",
+                    "continuationNotice",
+                ]:
+                    continue
 
                 footnote_text = ""
                 for paragraph in footnote.findall("w:p", FOOTNOTE_NAMESPACE):
@@ -68,8 +75,7 @@ def parse_footnotes(doc_path: Path) -> list[Footnote]:
                                 footnote_text += text.text
 
                 footnote_text = footnote_text.strip()
-                if footnote_text:
-                    footnote_strings.append(footnote_text)
+                footnote_strings.append(footnote_text)
 
     return [
         Footnote(num=i, text=text)

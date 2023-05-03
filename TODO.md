@@ -7,5 +7,6 @@
 
 ### Done ✓
 
+- [x] Fix extra empty footnote when parsing sample document
 - [x] Create MVP
 - [x] Set up post-push github action
