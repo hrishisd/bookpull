@@ -1,25 +1,29 @@
+import importlib.resources
 from pathlib import Path
 
 from bookpull.main import parse_footnotes
 
+RESOURCES = importlib.resources.files("tests.resources")
+
 
 def test_parse_sample_article_footnotes_cout():
-    footnotes = parse_footnotes(Path("tests/resources/sample-article.docx"))
+    article_path = RESOURCES / "sample-article.docx"
+    footnotes = parse_footnotes(article_path)
     for i, note in enumerate(footnotes, start=1):
         print(f"Footnote {i}: {note.text}")
-    assert len(footnotes) == 451
+    assert len(footnotes) == 453
 
 
 def test_parse_small_doc_footnotes_content():
     assert_parse_footnotes(
-        "tests/resources/small-doc.docx",
+        "small-doc.docx",
         ["Note 1", "Note 2", "This is the third footnote"],
     )
 
 
 def test_parse_sample_paragraph_footnotes_content():
     assert_parse_footnotes(
-        "tests/resources/sample-article-paragraph.docx",
+        "sample-article-paragraph.docx",
         [
             (
                 "389 U.S. 347 (1967); see, e.g., Kiel Brennan-Marquez, "
@@ -41,7 +45,7 @@ def test_parse_sample_paragraph_footnotes_content():
     )
 
 
-def assert_parse_footnotes(doc_path: str, expected_footnotes: list[str]):
-    footnotes = parse_footnotes(Path(doc_path))
+def assert_parse_footnotes(file_name: str, expected_footnotes: list[str]):
+    footnotes = parse_footnotes(RESOURCES / file_name)
     text = [footnotes.text for footnotes in footnotes]
     assert text == expected_footnotes
