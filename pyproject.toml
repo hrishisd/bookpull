@@ -12,6 +12,10 @@ eyecite = "^2.5.1"
 # This is needed to avoid ModuleNotFoundError: No module named 'exceptiongroup'
 # when running poetry run pytest from the github action.
 exceptiongroup = "^1.1.1"
+flask = "^2.3.2"
+flask-wtf = "^1.1.1"
+flask-uploads = "^0.2.1"
+flask-dropzone = "^1.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

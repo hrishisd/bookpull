@@ -1,11 +1,9 @@
 import csv
 import itertools
-import typing
 import xml.etree.ElementTree as ET
 import zipfile
 from dataclasses import dataclass
 from pathlib import Path
-from typing import cast
 
 import eyecite
 from eyecite.models import (
@@ -100,35 +98,30 @@ def parse_citations(
 def discover_link_citations(
     citations_by_footnote: list[tuple[Footnote, list[CitationBase]]]
 ) -> list[tuple[Footnote, list[CitationBase | LinkCitation]]]:
-    @typing.no_type_check
     def discover_links(
-        footnote: Footnote, citations: list[CitationBase]
+        footnote: Footnote, flattened: list[CitationBase]
     ) -> list[CitationBase | LinkCitation]:
-        if not citations:
-            if link_citation := parse_link_citations(footnote.text):
-                return [link_citation]
-            else:
-                return []
+        if not flattened:
+            return parse_link_citations(footnote.text)
         else:
-            gaps = (
+            gaps_between_base_citations = (
                 (left.full_span()[1], right.full_span()[0])
-                for left, right in zip(citations, citations[1:])
+                for left, right in zip(flattened, flattened[1:])
             )
-            link_citations: list[list[LinkCitation]] = [
+            link_citations_list: list[list[LinkCitation]] = [
                 parse_link_citations(footnote.text[slice(*gap)])
-                for gap in gaps
+                for gap in gaps_between_base_citations
             ]
-            flattened_citations: list[CitationBase | LinkCitation] = [
+            flattened: list[CitationBase | LinkCitation] = [  # type: ignore
                 elem
                 for citation, link_citations in itertools.zip_longest(
-                    citations, link_citations, fillvalue=[]
+                    flattened,
+                    link_citations_list,
+                    fillvalue=[],
                 )
-                for elem in [
-                    cast(CitationBase, citation),
-                    *cast(LinkCitation, link_citations),
-                ]
+                for elem in [citation] + link_citations
             ]
-            return flattened_citations
+            return flattened
 
     return [
         (footnote, discover_links(footnote, citations))
