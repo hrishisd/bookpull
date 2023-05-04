@@ -16,6 +16,7 @@ flask = "^2.3.2"
 flask-wtf = "^1.1.1"
 flask-uploads = "^0.2.1"
 flask-dropzone = "^1.6.0"
+gunicorn = "^20.1.0"
 
 
 [tool.poetry.group.dev.dependencies]
